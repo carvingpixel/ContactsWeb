@@ -54,9 +54,10 @@ namespace ContactsWeb
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+
+            app.UseFacebookAuthentication(
+                appId: "283813535448985",
+                appSecret: "ea528c7798ef9a9bdd8c3aa9f0780f5a");
 
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{
