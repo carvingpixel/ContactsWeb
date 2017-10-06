@@ -56,9 +56,10 @@ namespace ContactsWeb
             //   consumerSecret: "");
 
 
-            app.UseFacebookAuthentication(   //test and production moved out to configmanager webconfig
-                appId: ConfigurationManager.AppSettings["AppId"], //"283813535448985",
-                appSecret: ConfigurationManager.AppSettings["AppSecret"]);  // "ea528c7798ef9a9bdd8c3aa9f0780f5a"
+            app.UseFacebookAuthentication(   
+                //test and production moved out to configmanager webconfig and release.config
+                appId: ConfigurationManager.AppSettings["AppId"], 
+                appSecret: ConfigurationManager.AppSettings["AppSecret"]);  
 
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{
