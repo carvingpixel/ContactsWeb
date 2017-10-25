@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using ContactsWeb.Models;
+using Microsoft.AspNet.Identity;
 
 namespace ContactsWeb.Controllers
 {
@@ -15,12 +16,30 @@ namespace ContactsWeb.Controllers
         private ContactsWebContext db = new ContactsWebContext();
 
         // GET: Contacts
+        [Authorize]
         public ActionResult Index()
         {
-            return View(db.Contacts.ToList());
+            try
+            {
+                //ViewBag.UserId = userId;
+                //ViewBag.UserName = userName;
+
+                //ViewData["UserId"] = userId;
+                //ViewData["UserName"] = userName;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            var userId = GetCurrentUserId();
+            return View(db.Contacts.Where(x => x.UserId == userId).ToList());
+
         }
 
+
         // GET: Contacts/Details/5
+        [Authorize]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -36,6 +55,7 @@ namespace ContactsWeb.Controllers
         }
 
         // GET: Contacts/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
@@ -46,6 +66,7 @@ namespace ContactsWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create([Bind(Include = "Id,UserId,FirstName,LastName,Email,PhonePrimary,PhoneSecondary,Birthdate,StreetAdd,StreetAdd2,City,state,zip")] Contact contact)
         {
             if (ModelState.IsValid)
@@ -59,6 +80,7 @@ namespace ContactsWeb.Controllers
         }
 
         // GET: Contacts/Edit/5
+        [Authorize]
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -78,6 +100,7 @@ namespace ContactsWeb.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Edit([Bind(Include = "Id,UserId,FirstName,LastName,Email,PhonePrimary,PhoneSecondary,Birthdate,StreetAdd,StreetAdd2,City,state,zip")] Contact contact)
         {
             if (ModelState.IsValid)
@@ -90,6 +113,7 @@ namespace ContactsWeb.Controllers
         }
 
         // GET: Contacts/Delete/5
+        [Authorize]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -107,6 +131,7 @@ namespace ContactsWeb.Controllers
         // POST: Contacts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult DeleteConfirmed(int id)
         {
             Contact contact = db.Contacts.Find(id);
@@ -123,5 +148,21 @@ namespace ContactsWeb.Controllers
             }
             base.Dispose(disposing);
         }
+
+
+        public Guid GetCurrentUserId()
+        {
+            return new Guid(User.Identity.GetUserId());
+        }
+
+
+        private bool EnsureIsUserContact(Contact contact)
+        {
+            return contact.UserId == GetCurrentUserId();
+        }
+
+
+
     }
+
 }
